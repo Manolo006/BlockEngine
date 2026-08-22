@@ -1,32 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" href="styles/home.css">
-    <title>Manolo's Page</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="refresh" content="0; url=index.html">
+    <title>Redirecting...</title>
+    <script>
+        window.location.replace("index.html");
+    </script>
 </head>
 <body>
-<div id="navbar-container"></div>
-<script>
-  fetch('/navbar.html')
-    .then(response => response.text())
-    .then(data => {
-      document.getElementById('navbar-container').innerHTML = data;
-    })
-    .catch(error => console.error('Errore:', error));
-</script>
-</div>
-<div class="container">
-    <div class="content">
-        <h1>Benvenuto!</h1>
-        <p>Questa è la tua homepage. Usa il menu per navigare tra le sezioni.</p>
-    </div>
-</div>
-
-<script>
-function toggleSidebar() {
-    const sidebar = document.getElementById('sidebar');
-    sidebar.classList.toggle('sidebar-open');
-}
-</script>
+    <p>Reindirizzamento in corso a <a href="index.html">index.html</a>...</p>
 </body>
 </html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="styles/home.css">
+    <title>Manolo's Page</title>
+</head>
+<body>
+<div id="navbar-container"></div>
+<script>
+  fetch('navbar.html')
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById('navbar-container').innerHTML = data;
+    })
+    .catch(error => console.error('Errore:', error));
+</script>
+</div>
+<div class="container">
+    <div class="content">
+        <h1>Benvenuto!</h1>
+        <p>Questa è la tua homepage. Usa il menu per navigare tra le sezioni.</p>
+    </div>
+</div>
+
+<script>
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    if (sidebar) sidebar.classList.toggle('sidebar-open');
+}
+</script>
+</body>
+</html>
