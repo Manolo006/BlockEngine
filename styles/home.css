@@ -1,0 +1,168 @@
+@font-face {
+  font-family: "font";
+  src: url("../font/font.woff") format('woff');
+}
+@font-face {
+  font-family: "icon";
+  src: url("../font/icon.woff") format("woff");
+}
+/* Reset some default styles */
+body, h1, p {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Raleway';
+  background-color: #333; /* Dark gray background */
+  color: #fff; /* White text color */
+  position: relative;
+}
+
+.top-bar {
+  display: flex;
+  background-color: #222; /* Dark background color */
+  padding: 5px 10px; /* Slimmer padding */ 
+  align-items: center;
+}
+
+.top-bar .menu-icon {
+  cursor: pointer;
+  padding: 10px;
+}
+
+.bar {
+  width: 25px;
+  height: 3px;
+  background-color: #ffa600; /* Orange bar color */
+  margin: 6px 0;
+  transition: 0.4s;
+}
+
+.top-bar .website-name {
+  margin: 0 20px; /* Add space on both sides of the website name */
+  font-size: 20px;
+  color: #ffa600; /* Orange color */
+}
+
+.top-bar a {
+  color: #ffa600; /* Orange color */
+  text-decoration: none;
+  font-size: 18px;
+  margin-left: auto; /* Move the login option to the right */
+  display: flex;
+  align-items: center; /* Center the login text vertically */
+  padding: 13px; /* Center the login text vertically */
+}
+
+.top-bar a:hover {
+  color: #ffd900; /* Light orange color on hover */
+}
+
+.login-option a {
+  display: inline-block;
+  color: #FFA500; /* Orange color */
+  text-decoration: none;
+  font-size: 18px;
+  margin-top: auto; /* Push Login to the bottom */
+  padding: 10px; /* Adjust padding for a square button */
+  border: 2px solid #FFA500; /* Border color */
+  border-radius: 5px; /* Rounded corners for a smoother look */
+  transition: 0.3s; /* Smooth transition */
+}
+
+.login-option a:hover {
+  background-color: #FFD700; /* Light orange color on hover */
+  color: #fff; /* White color on hover */
+}
+
+.container {
+  display: flex;
+  transition: margin-left 0.3s;
+  margin-left: 0;
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 220px;
+  height: 100vh;
+  background: #222;
+  border-right: 2px solid orange;
+  transform: translateX(-100%);
+  transition: transform 0.3s;
+  z-index: 100;
+  padding-top: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center content horizontally */
+}
+
+.sidebar.active {
+  transform: translateX(0);
+}
+
+.sidebar p {
+  color: white;
+  margin-top: 10px; /* Add space between X icon and menu options */
+}
+
+nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+nav ul li {
+  margin-bottom: 20px; /* More space between menu options */
+}
+
+nav ul li a {
+  color: #FFA500; /* Orange color */
+  text-decoration: none;
+  font-size: 18px;
+}
+
+nav ul li a:hover {
+  color: #FFD700; /* Light orange color on hover */
+}
+
+.login-option {
+  margin-top: auto; /* Push Login to the bottom */
+}
+
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* centra verticalmente */
+  min-height: 80vh;        /* spazio verticale */
+  text-align: center;
+}
+
+.content h1 {
+  font-size: 2.8em;
+  margin-bottom: 20px;
+  color: #ffa600;
+  font-family: "font", 'Raleway', sans-serif;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.content p {
+  font-size: 1.4em;
+  color: #fff;
+  max-width: 500px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+/* Menu icon sempre visibile */
+.menu-icon {
+    position: fixed;
+    top: 18px;
+    left: 18px;
+    z-index: 200;
+}

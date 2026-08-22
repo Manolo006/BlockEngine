@@ -1,0 +1,85 @@
+table{
+    border: 1px solid gray;
+    color: black;
+    text-align: center;
+    width: 60%;
+    margin: 0 auto; /* Center the table horizontally */
+}
+table tr {
+    height: 40px;
+}
+#text {
+    background-color: gray;
+}
+#dark_red {
+    background-color: #AA0000;
+}
+#red {
+    background-color: #FF5555;
+}
+#gold {
+    background-color: #FFAA00;
+}
+#yellow {
+    background-color: #FFFF55;
+}
+#dark_green {
+    background-color: #00AA00;
+}
+#green {
+    background-color: #55AA55;
+}
+#aqua {
+    background-color: #55FFFF;
+}
+#dark_aqua {
+    background-color: #00AAAA;
+}
+#dark_blue {
+    background-color: #0000AA;
+}
+#blue {
+    background-color: #5555FF;
+}
+#light_purple {
+    background-color: #FF55FF;
+}
+#dark_purple {
+    background-color: #AA00AA;
+}
+#white {
+    background-color: #FFFFFF;
+}
+#gray {
+    background-color: #AAAAAA;
+    color: white;
+}
+#dark_gray {
+    background-color: #555555;
+    color: white;
+}
+#black {
+    background-color: #000000;
+    color: white;
+}
+#reset {
+    background-color: white;
+}
+#bold {
+    background-color: white;
+}
+#italics {
+    background-color: white;
+}
+#underlined {
+    background-color: white;
+}
+#barred {
+    background-color: white;
+}
+#obfuscated {
+    background-color: white;
+}
+table td {
+    width: 30%;
+}

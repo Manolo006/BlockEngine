@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="styles/home.css">
+    <title>Manolo's Page</title>
+    <style>
+      .navbar {
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 100vw;
+        height: 56px;
+        background: #181818;
+        color: orange;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        box-shadow: 0 2px 8px #000a;
+      }
+      .navbar .nav-links {
+        display: flex;
+        gap: 24px;
+        margin-right: 32px;
+      }
+      .navbar .nav-links a {
+        color: orange;
+        text-decoration: none;
+        font-size: 1.1em;
+        font-weight: 600;
+        padding: 8px 14px;
+        border-radius: 6px;
+        transition: background 0.2s, color 0.2s;
+      }
+      .navbar .nav-links a:hover,
+      .navbar .nav-links a.active {
+        background: orange;
+        color: #181818;
+      }
+      @media (max-width: 600px) {
+        .navbar {
+          height: auto;
+          flex-direction: column;
+          align-items: center;
+        }
+        .navbar .nav-links {
+          flex-direction: column;
+          gap: 0;
+          margin-right: 0;
+          width: 100vw;
+        }
+        .navbar .nav-links a {
+          width: 100vw;
+          text-align: right;
+          border-radius: 0;
+        }
+      }
+      body {
+        margin: 0;
+        padding-top: 56px; /* spazio per la navbar */
+      }
+    </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-links">
+      <a href="../home.html" class="active">Home</a>
+      <a href="#">About</a>
+      <a href="../portfolio.html">Portfolio</a>
+      <a href="../minecraft.html">Minecraft</a>
+      <a href="#">Contact</a>
+    </div>
+  </nav>
+</body>
+</html>

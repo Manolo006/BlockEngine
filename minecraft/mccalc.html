@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="../styles/McCalc.css">
+    <link rel="stylesheet" href="../styles/home.css">
+    <title>McCalc - Stack Converter</title>
+</head>
+<body>
+<div id="navbar-container"></div>
+<script>
+  fetch('/navbar.html')
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById('navbar-container').innerHTML = data;
+    })
+    .catch(error => console.error('Errore:', error));
+</script>
+<div class="container">
+    <div class="content">
+        <img src="../images/McCalcc.png" class="center" alt="McCalc Logo">
+        <form class="stackForm">
+            <div id="radioImput">
+                <input type="radio" id="conversionType16" name="input" value="2" checked>
+                <label for="conversionType16"><img src="../images/16stack.png" id="stack16" alt="Stack 16"></label>
+                <input type="radio" id="conversionType64" name="input" value="1">
+                <label for="conversionType64"><img src="../images/64stack.png" id="stack64" alt="Stack 64"></label>
+            </div>
+            <input type="number" id="numberInput" placeholder="Inserisci il numero di item" required min="0" max="99999">
+            <div class="inputbox">
+                <button type="submit" id="ConvertButton">Converti</button>
+            </div>
+        </form>
+        <div id="output"></div>
+        <div id="info">
+            Questo piccolo programma serve per convertire il numero degli item che possiedi in stack e item.<br>
+            Seleziona l'enderpearl per gli stack da 16 e la cobblestone per gli stack da 64.
+        </div>
+    </div>
+</div>
+
+<script src="../script/script.js"></script>
+<script>
+    function toggleSidebar() {
+        document.getElementById('sidebar').classList.toggle('active');
+    }
+
+    document.querySelector('.stackForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        const conversionType16 = document.getElementById('conversionType16');
+        const numberInput = parseInt(document.getElementById('numberInput').value);
+
+        let result;
+        if (isNaN(numberInput) || numberInput < 0) {
+            result = "Inserisci un numero valido!";
+        } else if (conversionType16.checked) {
+            result = numberToStack16(numberInput);
+        } else {
+            result = numberToStack64(numberInput);
+        }
+
+        document.getElementById('output').innerText = result;
+    });
+
+    function numberToStack64(itemNumber) {
+        let i = Math.floor(itemNumber / 64);
+        let rest = itemNumber % 64;
+        return `(${i}) STACK e (${rest}) ITEM`;
+    }
+
+    function numberToStack16(itemNumber) {
+        let i = Math.floor(itemNumber / 16);
+        let rest = itemNumber % 16;
+        return `(${i}) STACK e (${rest}) ITEM`;
+    }
+</script>
+</body>
+</html>

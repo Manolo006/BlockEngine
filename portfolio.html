@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Portfolio Minecraft - IlTuoNome</title>
+  <link rel="stylesheet" href="styles/portfolio.css">
+</head>
+<body>
+    <div id="navbar-container"></div>
+<script>
+  fetch('/navbar.html')
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById('navbar-container').innerHTML = data;
+    })
+    .catch(error => console.error('Errore:', error));
+</script>
+
+  <h1 class="portfolio-title">🎮 Portfolio</h1>
+  <div class="intro">
+    <p>Ciao! Mi chiamo <strong>Manolo006</strong> e una mia grande passione è creare TexturePack e DataPack per Minecraft.</p>
+    <p>Qui sotto puoi scaricare i miei progetti gratuitamente.</p>
+  </div>
+
+  <div class="projects-grid">
+    <div class="project">
+      <img src="images/teamgenerator.png" alt="teamgenerator">
+      <h2>Team Generator Datapack</h2>
+      <p>Un datapack che genera automaticamente i team. Ideale per PvP, minigame e server personalizzati. Compatibile con Minecraft 1.20.6/7/8</p>
+      <a href="https://drive.google.com/uc?export=download&id=1Fbf5w5uQ1fSzbtKKtbodP1yaNoIsPe2i" target="_blank">Scarica</a>
+    </div>
+    <div class="project">
+      <img src="images/uhclogo.png" alt="uhclogo">
+      <h2>UHC Datapack</h2>
+      <p>I mob ora hanno comportamenti avanzati e reagiscono in modo intelligente all'ambiente!</p>
+      <a href="https://drive.google.com/uc?export=download&id=1kVeIFB75ft3P8aTFN4oTFd4OpSqhoBCV" target="_blank">Scarica</a>
+    </div>
+    <div class="project">
+      <img src="images/skyhaste.png" alt="skyhaste">
+      <h2>Sky Haste TexturePack</h2>
+      <p>Aggiunge effetti di velocità e leggerezza ai giocatori nel mondo del cielo. Compatibile con 1.20+.</p>
+      <a href="https://drive.google.com/uc?export=download&id=ID_DEL_FILE_3" target="_blank">Scarica</a>
+    </div>
+    <!-- Puoi aggiungere altri progetti qui -->
+  </div>
+
+</body>
+</html>

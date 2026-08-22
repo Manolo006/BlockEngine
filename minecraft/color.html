@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="../styles/home.css">
+    <link rel="stylesheet" href="../styles/color.css">
+    <title>Color Code</title>
+</head>
+<body>
+<div id="navbar-container"></div>
+<script>
+  fetch('/navbar.html')
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById('navbar-container').innerHTML = data;
+    })
+    .catch(error => console.error('Errore:', error));
+</script>
+</div>
+<div class="container">
+    <div class="content">
+        <table>
+            <tr id="text">
+              <td>Chat Color Code</td>
+              <td>MOTD Color Code</td>
+              <td>Color Name</td>
+              <td>HEX Color</td>
+            </tr>
+            <tr id="dark_red">
+                <td>§4</td>
+                <td>\u00A74</td>
+                <td>dark_red</td>
+                <td>AA0000</td>
+            </tr>
+            <tr id="red">
+                <td>§c</td>
+                <td>\u00A7c</td>
+                <td>red</td>
+                <td>FF5555</td>
+            </tr>
+            <tr id="gold">
+                <td>§6</td>
+                <td>\u00A76</td>
+                <td>gold</td>
+                <td>FFAA00</td>
+            </tr>
+            <tr id="yellow">
+                <td>§e</td>
+                <td>\u00A7e</td>
+                <td>yellow</td>
+                <td>FFFF55</td>
+            </tr>
+            <tr id="dark_green">
+                <td>§2</td>
+                <td>\u00A72</td>
+                <td>dark_green</td>
+                <td>00AA00</td>
+            </tr>
+            <tr id="green">
+                <td>§a</td>
+                <td>\u00A7a</td>
+                <td>green</td>
+                <td>55AA55</td>
+            </tr>
+            <tr id="aqua">
+                <td>§b</td>
+                <td>\u00A7b</td>
+                <td>aqua</td>
+                <td>55FFFF</td>
+            </tr>
+            <tr id="dark_aqua">
+                <td>§3</td>
+                <td>\u00A73</td>
+                <td>dark_aqua</td>
+                <td>00AAAA</td>
+            </tr>
+            <tr id="dark_blue">
+                <td>§1</td>
+                <td>\u00A71</td>
+                <td>dark_blue</td>
+                <td>0000AA</td>
+            </tr>
+            <tr id="blue">
+                <td>§9</td>
+                <td>\u00A79</td>
+                <td>blue</td>
+                <td>5555FF</td>
+            </tr>
+            <tr id="light_purple">
+                <td>§d</td>
+                <td>\u00A7d</td>
+                <td>light_purple</td>
+                <td>FF55FF</td>
+            </tr>
+            <tr id="dark_purple">
+                <td>§5</td>
+                <td>\u00A75</td>
+                <td>dark_purple</td>
+                <td>AA00AA</td>
+            </tr>
+            <tr id="white">
+                <td>§f</td>
+                <td>\u00A7f</td>
+                <td>white</td>
+                <td>FFFFFF</td>
+            </tr>
+            <tr id="gray">
+                <td>§7</td>
+                <td>\u00A77</td>
+                <td>gray</td>
+                <td>AAAAAA</td>
+            </tr>
+            <tr id="dark_gray">
+                <td>§8</td>
+                <td>\u00A78</td>
+                <td>dark_gray</td>
+                <td>555555</td>
+            </tr>
+            <tr id="black">
+                <td>§0</td>
+                <td>\u00A70</td>
+                <td>black</td>
+                <td>000000</td>
+            </tr>
+            <tr id="reset">
+                <td>§r</td>
+                <td>\u00A7r</td>
+                <td>reset</td>
+                
+            </tr>
+            <tr id="bold">
+                <td>§l</td>
+                <td>\u00A7l</td>
+                <td>Bold</td>
+                
+            </tr>
+            <tr id="italics">
+                <td>§o</td>
+                <td>\u00A7o</td>
+                <td>italics</td>
+                
+            </tr>
+            <tr id="underlined">
+                <td>§n</td>
+                <td>\u00A7n</td>
+                <td>Underlined</td>
+                
+            </tr>
+            <tr id="barred">
+                <td>§m</td>
+                <td>\u00A7m</td>
+                <td>Barred</td>
+                
+            </tr>
+            <tr id="obfuscated">
+                <td>§k</td>
+                <td>\u00A7k</td>
+                <td>Obfuscated</td>
+                
+            </tr>
+          </table>
+    </div>
+</div>
+
+<script src="../script/script.js"></script>
+<script>
+function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('active');
+}
+
+// Funzione per copiare il testo
+function copyText(text) {
+    navigator.clipboard.writeText(text).then(function() {
+        showCopyMessage(text);
+    });
+}
+
+// Mostra una notifica breve
+function showCopyMessage(text) {
+    let msg = document.createElement('div');
+    msg.innerText = `Copiato: ${text}`;
+    msg.style.position = 'fixed';
+    msg.style.bottom = '30px';
+    msg.style.left = '50%';
+    msg.style.transform = 'translateX(-50%)';
+    msg.style.background = 'orange';
+    msg.style.color = '#222';
+    msg.style.padding = '8px 18px';
+    msg.style.borderRadius = '8px';
+    msg.style.fontWeight = 'bold';
+    msg.style.zIndex = '9999';
+    document.body.appendChild(msg);
+    setTimeout(() => msg.remove(), 1200);
+}
+
+// Aggiungi evento click a tutte le celle della tabella
+document.addEventListener('DOMContentLoaded', function() {
+    // Seleziona tutte le righe tr tranne la prima (intestazione)
+    document.querySelectorAll('table tr:not(:first-child) td').forEach(function(td) {
+        td.style.cursor = 'pointer';
+        td.title = 'Clicca per copiare';
+        td.addEventListener('click', function() {
+            copyText(td.innerText);
+        });
+    });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="../styles/enchant.css">
+    <link rel="stylesheet" href="../styles/home.css">
+    <title>Custom Enchant</title>
+</head>
+<body>
+<div id="navbar-container"></div>
+<script>
+  fetch('/navbar.html')
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById('navbar-container').innerHTML = data;
+    })
+    .catch(error => console.error('Errore:', error));
+</script>
+    </div>
+    <div class="container">
+        <div class="content">
+            <h1>Custom Enchant</h1>
+            
+            <textarea onclick="copy()" id="output" readonly></textarea>
+            
+            <br>
+            <script src="../script/enchant.js"></script>
+            <div class="container">
+    <div class="content">
+        <h2>Enchantments</h2>
+        <div id="enchant-categories">
+            <div id="armor-enchants" class="enchant-category">
+                <h3>Armor</h3>
+                <div class="enchant-list"></div>
+            </div>
+            <div id="movement-enchants" class="enchant-category">
+                <h3>Movement/Environment</h3>
+                <div class="enchant-list"></div>
+            </div>
+            <div id="weapon-enchants" class="enchant-category">
+                <h3>Weapon</h3>
+                <div class="enchant-list"></div>
+            </div>
+            <div id="bow-enchants" class="enchant-category">
+                <h3>Bow</h3>
+                <div class="enchant-list"></div>
+            </div>
+            <div id="crossbow-enchants" class="enchant-category">
+                <h3>Crossbow</h3>
+                <div class="enchant-list"></div>
+            </div>
+            <div id="bowcrossbow-enchants" class="enchant-category">
+                <h3>Bow/Crossbow</h3>
+                <div class="enchant-list"></div>
+            </div>
+            <div id="trident-enchants" class="enchant-category">
+                <h3>Trident</h3>
+                <div class="enchant-list"></div>
+            </div>
+            <div id="tools-enchants" class="enchant-category">
+                <h3>Tools</h3>
+                <div class="enchant-list"></div>
+            </div>
+            <div id="durability-enchants" class="enchant-category">
+                <h3>Durability</h3>
+                <div class="enchant-list"></div>
+            </div>
+            <div id="fishing-enchants" class="enchant-category">
+                <h3>Fishing</h3>
+                <div class="enchant-list"></div>
+            </div>
+            <div id="cursed-enchants" class="enchant-category">
+                <h3>Cursed</h3>
+                <div class="enchant-list"></div>
+            </div>
+        </div>
+        <div id="memory"></div>
+    </div>
+</div>
+        </div>
+    </div> 
+    <script>
+function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('active');
+}
+</script>
+</body>
+</html>
