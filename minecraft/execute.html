@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Execute Command Builder - Minecraft Java Edition</title>
+  <link rel="stylesheet" href="../styles/home.css">
+  <link rel="stylesheet" href="../styles/execute.css">
+</head>
+<body>
+  <!-- Global Navbar -->
+  <div id="navbar-container"></div>
+  <script>
+    fetch('../navbar.html')
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById('navbar-container').innerHTML = data;
+      })
+      .catch(error => console.error('Navbar load error:', error));
+  </script>
+
+  <!-- 2-Column Main Layout -->
+  <div class="execute-layout">
+
+    <!-- LEFT SIDEBAR (Subcommands Library) -->
+    <div class="library-sidebar">
+      <div class="library-header">
+        <h2>⚡ Subcommands</h2>
+        <button class="mc-btn btn-gold" onclick="openPresetsModal()" style="padding: 4px 8px; font-size: 11px;">
+          📚 Presets
+        </button>
+      </div>
+
+      <div class="library-scroll-area">
+
+        <!-- CONTEXT CATEGORY -->
+        <div class="accordion-category cat-context">
+          <div class="accordion-header" onclick="toggleAccordion(this)">
+            <span>👥 Context</span>
+            <span class="cat-badge tag-context">5</span>
+          </div>
+          <div class="accordion-body">
+            <button class="subcmd-btn" onclick="addSubcommand('as')">
+              <code>as &lt;targets&gt;</code>
+              <span>Changes executing entity (@s)</span>
+            </button>
+            <button class="subcmd-btn" onclick="addSubcommand('at')">
+              <code>at &lt;targets&gt;</code>
+              <span>Executes at target's pos/rotation/dim</span>
+            </button>
+            <button class="subcmd-btn" onclick="addSubcommand('in')">
+              <code>in &lt;dimension&gt;</code>
+              <span>Changes dimension without coords change</span>
+            </button>
+            <button class="subcmd-btn" onclick="addSubcommand('on')">
+              <code>on &lt;relation&gt;</code>
+              <span>Executes on attacker, target, vehicle, etc.</span>
+            </button>
+            <button class="subcmd-btn" onclick="addSubcommand('summon')">
+              <code>summon &lt;entity&gt;</code>
+              <span>Spawns entity and executes context as it</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- POSITION & ROTATION CATEGORY -->
+        <div class="accordion-category cat-position">
+          <div class="accordion-header" onclick="toggleAccordion(this)">
+            <span>📍 Position &amp; Rotation</span>
+            <span class="cat-badge tag-position">5</span>
+          </div>
+          <div class="accordion-body">
+            <button class="subcmd-btn" onclick="addSubcommand('positioned')">
+              <code>positioned (&lt;pos&gt;|as|over)</code>
+              <span>Changes execution coordinates / heightmap</span>
+            </button>
+            <button class="subcmd-btn" onclick="addSubcommand('align')">
+              <code>align &lt;axes&gt;</code>
+              <span>Aligns/floors coordinates to block corners</span>
+            </button>
+            <button class="subcmd-btn" onclick="addSubcommand('anchored')">
+              <code>anchored (feet|eyes)</code>
+              <span>Sets anchor point for facing &amp; raycasts</span>
+            </button>
+            <button class="subcmd-btn" onclick="addSubcommand('facing')">
+              <code>facing (&lt;pos&gt;|entity)</code>
+              <span>Rotates execution towards pos or entity</span>
+            </button>
+            <button class="subcmd-btn" onclick="addSubcommand('rotated')">
+              <code>rotated (&lt;rot&gt;|as)</code>
+              <span>Sets yaw &amp; pitch rotation angles</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- STORE CATEGORY -->
+        <div class="accordion-category cat-store">
+          <div class="accordion-header" onclick="toggleAccordion(this)">
+            <span>💾 Store</span>
+            <span class="cat-badge tag-store">1</span>
+          </div>
+          <div class="accordion-body">
+            <button class="subcmd-btn" onclick="addSubcommand('store')">
+              <code>store (result|success) ...</code>
+              <span>Stores result into score, NBT, storage, bossbar</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- CONDITIONS (IF / UNLESS) CATEGORY -->
+        <div class="accordion-category cat-condition">
+          <div class="accordion-header" onclick="toggleAccordion(this)">
+            <span>❓ Conditions (if / unless)</span>
+            <span class="cat-badge tag-condition">8</span>
+          </div>
+          <div class="accordion-body">
+            <button class="subcmd-btn" onclick="addSubcommand('condition_block')">
+              <code>if/unless block &lt;pos&gt; &lt;block&gt;</code>
+              <span>Matches block ID/state at position</span>
+            </button>
+            <button class="subcmd-btn" onclick="addSubcommand('condition_entity')">
+              <code>if/unless entity &lt;targets&gt;</code>
+              <span>Checks if entity exists / matches selector</span>
+            </button>
+            <button class="subcmd-btn" onclick="addSubcommand('condition_score')">
+              <code>if/unless score ...</code>
+              <span>Compares scoreboard scores or matches range</span>
+            </button>
+            <button class="subcmd-btn" onclick="addSubcommand('condition_data')">
+              <code>if/unless data (block|entity|storage)</code>
+              <span>Checks if NBT path exists and has data</span>
+            </button>
+            <button class="subcmd-btn" onclick="addSubcommand('condition_biome')">
+              <code>if/unless biome &lt;pos&gt; &lt;biome&gt;</code>
+              <span>Checks biome at coordinates</span>
+            </button>
+            <button class="subcmd-btn" onclick="addSubcommand('condition_dimension')">
+              <code>if/unless dimension &lt;dim&gt;</code>
+              <span>Checks current dimension</span>
+            </button>
+            <button class="subcmd-btn" onclick="addSubcommand('condition_loaded')">
+              <code>if/unless loaded &lt;pos&gt;</code>
+              <span>Checks if chunk at position is loaded</span>
+            </button>
+            <button class="subcmd-btn" onclick="addSubcommand('condition_items')">
+              <code>if/unless items ... (1.20.5+)</code>
+              <span>Checks item components in equipment or container</span>
+            </button>
+            <button class="subcmd-btn" onclick="addSubcommand('condition_predicate')">
+              <code>if/unless predicate &lt;pred&gt;</code>
+              <span>Evaluates datapack predicate</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- EXECUTION CATEGORY -->
+        <div class="accordion-category cat-execution">
+          <div class="accordion-header" onclick="toggleAccordion(this)">
+            <span>🚀 Execution</span>
+            <span class="cat-badge tag-execution">1</span>
+          </div>
+          <div class="accordion-body">
+            <button class="subcmd-btn" onclick="addSubcommand('run')">
+              <code>run &lt;command&gt;</code>
+              <span>Final command to execute</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- DATA GET QUICK REFERENCE -->
+        <div class="accordion-category cat-dataget">
+          <div class="accordion-header" onclick="openDataGetModal()">
+            <span style="color: #55ffff;">📖 /data get Dictionary</span>
+            <span class="cat-badge" style="background: #004455; color: #55ffff;">NBT</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- MAIN PIPELINE & OUTPUT AREA -->
+    <div class="main-pipeline-area">
+
+      <!-- TOP COMMAND BAR PREVIEW -->
+      <div class="top-command-bar">
+        <div class="command-bar-header">
+          <h3>⚡ Live /execute Command Preview</h3>
+          <div style="display: flex; gap: 10px; align-items: center;">
+            <span class="command-status-badge" id="commandStatusBadge">✅ Valid /execute Command</span>
+            <button class="mc-btn btn-primary" onclick="copyCommand()">📋 Copy Command</button>
+            <button class="mc-btn" onclick="exportMcFunction()">💾 Export .mcfunction</button>
+            <button class="mc-btn btn-danger" onclick="clearPipeline()" style="padding: 7px 10px;" title="Clear All">🧹</button>
+          </div>
+        </div>
+
+        <div class="command-preview-box">
+          <div class="command-code-text" id="commandCodeText">/execute ...</div>
+        </div>
+      </div>
+
+      <!-- ACTIVE SUBCOMMAND CARDS PIPELINE -->
+      <div class="pipeline-scroll-area" id="pipelineContainer">
+        <!-- Injected dynamically by JavaScript -->
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- PRESETS MODAL -->
+  <div class="modal-backdrop" id="presetsModal">
+    <div class="modal-window">
+      <div class="modal-header">
+        <h3>📚 /execute Command Presets &amp; Templates</h3>
+        <button class="modal-close-btn" onclick="closePresetsModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="preset-grid" id="presetGrid">
+          <!-- Presets injected dynamically -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="mc-btn" onclick="closePresetsModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DATA GET & NBT REFERENCE MODAL -->
+  <div class="modal-backdrop" id="dataGetModal">
+    <div class="modal-window" style="max-width: 860px;">
+      <div class="modal-header">
+        <h3>📖 /data get &amp; NBT Path Explorer (Minecraft Java Edition)</h3>
+        <button class="modal-close-btn" onclick="closeDataGetModal()">✕</button>
+      </div>
+      <div class="modal-body" id="dataGetModalBody">
+        <!-- Injected dynamically -->
+      </div>
+      <div class="modal-footer">
+        <button class="mc-btn" onclick="closeDataGetModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Scripts -->
+  <script src="../script/execute.js"></script>
+</body>
+</html>

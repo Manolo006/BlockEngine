@@ -1,0 +1,946 @@
+/* ==========================================================================
+   ADVANCEMENT TREE GENERATOR - MINECRAFT VANILLA THEME & CANVAS STYLING
+   ========================================================================== */
+
+@font-face {
+  font-family: 'Minecraft';
+  src: url('../font/font.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+:root {
+  --mc-dark-bg: #1e1e1e;
+  --mc-panel-bg: #c6c6c6;
+  --mc-panel-light: #ffffff;
+  --mc-panel-dark: #373737;
+  --mc-panel-shadow: #222222;
+  --mc-slot-bg: #8b8b8b;
+  --mc-slot-dark: #373737;
+  --mc-slot-light: #ffffff;
+  --mc-btn-bg: #c6c6c6;
+  --mc-btn-hover: #d8d8d8;
+  --mc-btn-active: #9b9b9b;
+  --mc-text-dark: #1e1e1e;
+  --mc-text-light: #ffffff;
+  --mc-orange: #ffa600;
+  --mc-gold: #ffaa00;
+  --mc-green: #55ff55;
+  --mc-dark-green: #00aa00;
+  --mc-red: #ff5555;
+  --mc-aqua: #55ffff;
+  --mc-purple: #aa00aa;
+  --mc-yellow: #ffff55;
+  --sidebar-width: 430px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+body {
+  margin: 0;
+  padding-top: 56px;
+  background-color: var(--mc-dark-bg);
+  color: var(--mc-text-light);
+  font-family: 'Minecraft', 'Segoe UI', Tahoma, monospace, sans-serif;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ================= APP CONTAINER ================= */
+.app-container {
+  display: flex;
+  width: 100vw;
+  height: calc(100vh - 56px);
+  position: relative;
+  overflow: hidden;
+}
+
+/* ================= CANVAS VIEWPORT ================= */
+.canvas-viewport {
+  flex: 1;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  background-color: #1a1a1a;
+  background-image: 
+    radial-gradient(rgba(0, 0, 0, 0.45) 15%, transparent 16%),
+    radial-gradient(rgba(0, 0, 0, 0.45) 15%, transparent 16%);
+  background-size: 60px 60px;
+  background-position: 0 0, 30px 30px;
+  cursor: grab;
+}
+
+.canvas-viewport.panning {
+  cursor: grabbing;
+}
+
+/* Canvas background tile layer (textured Minecraft stone/dirt) */
+.canvas-bg-layer {
+  position: absolute;
+  top: -4000px;
+  left: -4000px;
+  width: 12000px;
+  height: 12000px;
+  background-image: url('https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/26.2/assets/minecraft/textures/block/stone.png');
+  background-repeat: repeat;
+  background-size: 64px 64px;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  opacity: 0.85;
+  pointer-events: none;
+  transform-origin: 0 0;
+}
+
+/* Transformable Canvas Content */
+.canvas-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform-origin: 0 0;
+}
+
+/* SVG Connection Lines Layer */
+.connections-svg {
+  position: absolute;
+  top: -5000px;
+  left: -5000px;
+  width: 15000px;
+  height: 15000px;
+  pointer-events: none;
+  z-index: 5;
+  overflow: visible;
+}
+
+.connection-line {
+  fill: none;
+  stroke: #2e2e2e;
+  stroke-width: 8px;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+}
+
+.connection-line-core {
+  fill: none;
+  stroke: #a0a0a0;
+  stroke-width: 4px;
+  stroke-dasharray: 6 6;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+}
+
+.connection-line.selected {
+  stroke: #503000;
+}
+.connection-line-core.selected {
+  stroke: #ffa600;
+  stroke-dasharray: 8 4;
+}
+
+/* ================= NODES CONTAINER ================= */
+.nodes-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10;
+}
+
+/* ================= ADVANCEMENT NODE ================= */
+.adv-node {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 140px;
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+  transition: filter 0.15s ease, transform 0.05s ease;
+  z-index: 10;
+}
+
+.adv-node:hover {
+  filter: brightness(1.18);
+  z-index: 20;
+}
+
+.adv-node.dragging {
+  cursor: grabbing;
+  z-index: 100;
+  filter: brightness(1.25) drop-shadow(0 8px 16px rgba(0,0,0,0.6));
+}
+
+.adv-node.selected {
+  z-index: 50;
+}
+
+/* Node Frame Container */
+.node-frame-wrapper {
+  position: relative;
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease;
+}
+
+.adv-node.selected .node-frame-wrapper {
+  transform: scale(1.08);
+}
+
+/* Frame Types */
+.node-frame {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+/* TASK FRAME: Classic Square with bevel */
+.node-frame.frame-task {
+  background: #4a4a4a;
+  border: 4px solid #1e1e1e;
+  box-shadow: 
+    inset 3px 3px 0px #8b8b8b,
+    inset -3px -3px 0px #2e2e2e,
+    0 4px 8px rgba(0,0,0,0.6);
+  border-radius: 4px;
+}
+
+.adv-node.selected .node-frame.frame-task {
+  border-color: #ffa600;
+  box-shadow: 
+    0 0 0 3px #ffa600,
+    inset 3px 3px 0px #ffcc44,
+    inset -3px -3px 0px #995500,
+    0 6px 14px rgba(255, 166, 0, 0.4);
+}
+
+/* GOAL FRAME: Rounded Elliptical/Circle */
+.node-frame.frame-goal {
+  background: #4a4a4a;
+  border: 4px solid #1e1e1e;
+  border-radius: 26px;
+  box-shadow: 
+    inset 3px 3px 0px #8b8b8b,
+    inset -3px -3px 0px #2e2e2e,
+    0 4px 8px rgba(0,0,0,0.6);
+}
+
+.adv-node.selected .node-frame.frame-goal {
+  border-color: #ffa600;
+  box-shadow: 
+    0 0 0 3px #ffa600,
+    inset 3px 3px 0px #ffcc44,
+    inset -3px -3px 0px #995500,
+    0 6px 14px rgba(255, 166, 0, 0.4);
+}
+
+/* CHALLENGE FRAME: Fancy Diamond / Spiked Bevel */
+.node-frame.frame-challenge {
+  background: #3e324c;
+  border: 4px solid #1a1520;
+  border-radius: 8px;
+  transform: rotate(45deg) scale(0.85);
+  box-shadow: 
+    inset 3px 3px 0px #b685ea,
+    inset -3px -3px 0px #1f122f,
+    0 4px 10px rgba(0,0,0,0.7);
+}
+
+.adv-node.selected .node-frame.frame-challenge {
+  border-color: #ffa600;
+  box-shadow: 
+    0 0 0 4px #ffa600,
+    inset 3px 3px 0px #ffea77,
+    inset -3px -3px 0px #995500,
+    0 6px 18px rgba(255, 166, 0, 0.5);
+}
+
+/* Node Icon */
+.node-icon {
+  width: 32px;
+  height: 32px;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  z-index: 2;
+  pointer-events: none;
+  filter: drop-shadow(2px 2px 0px rgba(0,0,0,0.5));
+}
+
+/* Node Title Label */
+.node-title-label {
+  margin-top: 8px;
+  font-size: 13px;
+  line-height: 1.2;
+  text-align: center;
+  color: #ffffff;
+  text-shadow: 2px 2px 0 #000000, -1px -1px 0 #000000, 1px -1px 0 #000000, -1px 1px 0 #000000;
+  padding: 3px 8px;
+  background: rgba(0, 0, 0, 0.55);
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  max-width: 140px;
+  word-break: break-word;
+  white-space: normal;
+  pointer-events: none;
+}
+
+.adv-node.selected .node-title-label {
+  color: #ffff55;
+  border-color: #ffa600;
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.node-badge-root {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #aa00aa;
+  color: #fff;
+  font-size: 9px;
+  padding: 2px 5px;
+  border: 1px solid #ffffff;
+  border-radius: 3px;
+  text-shadow: 1px 1px 0 #000;
+  z-index: 3;
+}
+
+/* ================= CANVAS HUD CONTROLS ================= */
+.canvas-hud {
+  position: absolute;
+  bottom: 24px;
+  left: 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 50;
+  background: rgba(24, 24, 24, 0.88);
+  border: 2px solid #555555;
+  padding: 6px 12px;
+  border-radius: 8px;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.6);
+}
+
+.hud-btn {
+  background: #3c3c3c;
+  color: #ffffff;
+  border: 2px solid #1e1e1e;
+  border-top-color: #707070;
+  border-left-color: #707070;
+  padding: 6px 10px;
+  font-family: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.1s, transform 0.05s;
+  text-shadow: 1px 1px 0 #000;
+  border-radius: 4px;
+}
+
+.hud-btn:hover {
+  background: #505050;
+}
+
+.hud-btn:active {
+  background: #252525;
+  border-top-color: #1e1e1e;
+  border-left-color: #1e1e1e;
+  border-bottom-color: #707070;
+  border-right-color: #707070;
+}
+
+.hud-zoom-text {
+  font-size: 12px;
+  color: #ffa600;
+  min-width: 50px;
+  text-align: center;
+  font-weight: bold;
+}
+
+/* HUD Top Hint */
+.canvas-hint-bar {
+  position: absolute;
+  top: 16px;
+  left: 24px;
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid #444;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  color: #cccccc;
+  pointer-events: none;
+  z-index: 50;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.canvas-hint-bar span kbd {
+  background: #333;
+  color: #ffa600;
+  padding: 2px 6px;
+  border-radius: 3px;
+  border: 1px solid #555;
+  font-size: 11px;
+}
+
+/* ================= RIGHT SIDEBAR EDITOR (420px FIXED) ================= */
+.sidebar-editor {
+  width: var(--sidebar-width);
+  min-width: var(--sidebar-width);
+  height: 100%;
+  background: var(--mc-panel-bg);
+  border-left: 4px solid var(--mc-panel-dark);
+  box-shadow: inset 3px 0 0 var(--mc-panel-light), -4px 0 16px rgba(0,0,0,0.5);
+  display: flex;
+  flex-direction: column;
+  z-index: 60;
+  color: var(--mc-text-dark);
+  position: relative;
+}
+
+.sidebar-header {
+  padding: 14px 18px;
+  background: #b0b0b0;
+  border-bottom: 3px solid var(--mc-panel-dark);
+  box-shadow: inset 0 2px 0 var(--mc-panel-light), 0 2px 4px rgba(0,0,0,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sidebar-header h2 {
+  font-size: 16px;
+  color: #2b2b2b;
+  text-shadow: 1px 1px 0 #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sidebar-scroll-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Custom Minecraft Scrollbar */
+.sidebar-scroll-area::-webkit-scrollbar {
+  width: 10px;
+}
+.sidebar-scroll-area::-webkit-scrollbar-track {
+  background: #555555;
+}
+.sidebar-scroll-area::-webkit-scrollbar-thumb {
+  background: #8b8b8b;
+  border: 2px solid #373737;
+}
+
+/* Section Box / GUI Group */
+.gui-group {
+  background: #dbdbdb;
+  border: 3px solid var(--mc-panel-dark);
+  border-top-color: var(--mc-panel-light);
+  border-left-color: var(--mc-panel-light);
+  padding: 12px 14px;
+  border-radius: 4px;
+  box-shadow: 2px 2px 0 rgba(0,0,0,0.15);
+}
+
+.gui-group-title {
+  font-size: 13px;
+  font-weight: bold;
+  color: #333333;
+  text-shadow: 1px 1px 0 #ffffff;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid #b5b5b5;
+  padding-bottom: 4px;
+}
+
+.gui-group-title .badge {
+  font-size: 10px;
+  background: #555;
+  color: #fff;
+  padding: 2px 6px;
+  border-radius: 3px;
+  text-shadow: 1px 1px 0 #000;
+}
+
+/* Input Rows & Fields */
+.gui-row {
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.gui-row.row-horizontal {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.gui-label {
+  font-size: 12px;
+  color: #333333;
+  text-shadow: 1px 1px 0 #ffffff;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.gui-input, .gui-select, .gui-textarea {
+  width: 100%;
+  background: #000000;
+  color: #ffffff;
+  border: 2px solid #373737;
+  border-top-color: #222222;
+  border-left-color: #222222;
+  border-bottom-color: #555555;
+  border-right-color: #555555;
+  padding: 6px 8px;
+  font-family: inherit;
+  font-size: 12px;
+  outline: none;
+  border-radius: 2px;
+}
+
+.gui-input:focus, .gui-select:focus, .gui-textarea:focus {
+  border-color: #ffa600;
+  box-shadow: 0 0 0 1px #ffa600;
+}
+
+.gui-textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+/* Icon Selector Slot */
+.icon-picker-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.slot-icon-display {
+  width: 48px;
+  height: 48px;
+  background: #8b8b8b;
+  border: 3px solid #373737;
+  border-top-color: #373737;
+  border-left-color: #373737;
+  border-bottom-color: #ffffff;
+  border-right-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: filter 0.15s;
+}
+
+.slot-icon-display:hover {
+  filter: brightness(1.15);
+  border-color: #ffa600;
+}
+
+.slot-icon-display img {
+  width: 32px;
+  height: 32px;
+  image-rendering: pixelated;
+}
+
+/* Frame Type Selector */
+.frame-radio-group {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.frame-radio-btn {
+  background: #b5b5b5;
+  border: 2px solid #373737;
+  border-top-color: #ffffff;
+  border-left-color: #ffffff;
+  padding: 8px 4px;
+  text-align: center;
+  font-size: 11px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  border-radius: 3px;
+}
+
+.frame-radio-btn.active {
+  background: #4a4a4a;
+  color: #ffa600;
+  border-top-color: #222;
+  border-left-color: #222;
+  border-bottom-color: #ffa600;
+  border-right-color: #ffa600;
+  font-weight: bold;
+}
+
+/* Minecraft Styled Toggle Switch */
+.mc-switch {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  color: #222;
+  font-weight: bold;
+}
+
+.mc-switch input {
+  display: none;
+}
+
+.mc-switch-slider {
+  width: 36px;
+  height: 18px;
+  background: #4a4a4a;
+  border: 2px solid #222;
+  position: relative;
+  border-radius: 3px;
+  transition: background 0.15s;
+}
+
+.mc-switch-slider::after {
+  content: '';
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  width: 12px;
+  height: 12px;
+  background: #c6c6c6;
+  border: 1px solid #111;
+  transition: transform 0.15s;
+}
+
+.mc-switch input:checked + .mc-switch-slider {
+  background: #00aa00;
+}
+
+.mc-switch input:checked + .mc-switch-slider::after {
+  transform: translateX(18px);
+  background: #55ff55;
+}
+
+/* Criteria List & Builder */
+.criteria-item {
+  background: #ececec;
+  border: 2px solid #888888;
+  border-radius: 4px;
+  padding: 10px;
+  margin-bottom: 8px;
+}
+
+.criteria-item-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.criteria-name-tag {
+  font-weight: bold;
+  font-size: 12px;
+  color: #00aa00;
+}
+
+.btn-del-criteria {
+  background: #ff5555;
+  color: #fff;
+  border: 1px solid #aa0000;
+  padding: 2px 6px;
+  font-size: 10px;
+  cursor: pointer;
+  border-radius: 2px;
+}
+
+/* Requirements matrix pills */
+.requirements-matrix-box {
+  background: #222;
+  color: #fff;
+  padding: 8px;
+  border-radius: 3px;
+  font-size: 11px;
+  margin-top: 6px;
+  border: 1px solid #555;
+}
+
+/* Minecraft Button Style */
+.mc-btn {
+  background: #c6c6c6;
+  color: #1e1e1e;
+  border: 3px solid #373737;
+  border-top-color: #ffffff;
+  border-left-color: #ffffff;
+  padding: 8px 14px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  text-shadow: 1px 1px 0 #ffffff;
+  border-radius: 2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: filter 0.1s;
+}
+
+.mc-btn:hover {
+  background: #d4d4d4;
+}
+
+.mc-btn:active {
+  background: #9b9b9b;
+  border-top-color: #373737;
+  border-left-color: #373737;
+  border-bottom-color: #ffffff;
+  border-right-color: #ffffff;
+}
+
+.mc-btn.btn-primary {
+  background: #00aa00;
+  color: #ffffff;
+  text-shadow: 1px 1px 0 #000000;
+  border-color: #004400;
+  border-top-color: #55ff55;
+  border-left-color: #55ff55;
+}
+
+.mc-btn.btn-primary:hover {
+  background: #00cc00;
+}
+
+.mc-btn.btn-gold {
+  background: #ffaa00;
+  color: #1e1e1e;
+  border-color: #aa5500;
+  border-top-color: #ffff55;
+  border-left-color: #ffff55;
+}
+
+.mc-btn.btn-danger {
+  background: #aa0000;
+  color: #ffffff;
+  text-shadow: 1px 1px 0 #000000;
+  border-color: #550000;
+  border-top-color: #ff5555;
+  border-left-color: #ff5555;
+}
+
+.mc-btn.btn-block {
+  width: 100%;
+}
+
+/* Bottom Action Bar */
+.sidebar-footer {
+  padding: 12px 18px;
+  background: #b0b0b0;
+  border-top: 3px solid var(--mc-panel-dark);
+  box-shadow: inset 0 2px 0 var(--mc-panel-light);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.footer-btn-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+/* ================= MODAL DIALOGS ================= */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.75);
+  z-index: 2000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(3px);
+}
+
+.modal-backdrop.open {
+  display: flex;
+}
+
+.modal-window {
+  background: var(--mc-panel-bg);
+  border: 4px solid var(--mc-panel-dark);
+  border-top-color: var(--mc-panel-light);
+  border-left-color: var(--mc-panel-light);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+  width: 90%;
+  max-width: 680px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  border-radius: 4px;
+}
+
+.modal-header {
+  padding: 14px 18px;
+  background: #b0b0b0;
+  border-bottom: 3px solid var(--mc-panel-dark);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modal-header h3 {
+  font-size: 16px;
+  color: #1e1e1e;
+  text-shadow: 1px 1px 0 #ffffff;
+}
+
+.modal-close-btn {
+  background: #ff5555;
+  color: #fff;
+  border: 2px solid #373737;
+  font-size: 14px;
+  font-weight: bold;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-body {
+  padding: 16px 18px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.modal-footer {
+  padding: 12px 18px;
+  background: #b0b0b0;
+  border-top: 3px solid var(--mc-panel-dark);
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* Item Picker Grid */
+.item-search-bar {
+  margin-bottom: 12px;
+}
+
+.item-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(44px, 1fr));
+  gap: 6px;
+  max-height: 380px;
+  overflow-y: auto;
+  background: #373737;
+  padding: 10px;
+  border: 2px solid #222;
+}
+
+.item-slot-btn {
+  width: 44px;
+  height: 44px;
+  background: #8b8b8b;
+  border: 2px solid #373737;
+  border-top-color: #373737;
+  border-left-color: #373737;
+  border-bottom-color: #ffffff;
+  border-right-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+}
+
+.item-slot-btn:hover {
+  background: #a0a0a0;
+  border-color: #ffa600;
+}
+
+.item-slot-btn img {
+  width: 32px;
+  height: 32px;
+  image-rendering: pixelated;
+}
+
+/* JSON Code Viewer */
+.code-viewer {
+  background: #111111;
+  color: #55ff55;
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 13px;
+  line-height: 1.4;
+  padding: 12px;
+  border: 2px solid #333333;
+  border-radius: 4px;
+  max-height: 400px;
+  overflow: auto;
+  white-space: pre;
+}
+
+/* Toast Notifications */
+.toast-container {
+  position: fixed;
+  top: 70px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.mc-toast {
+  background: #1e1e1e;
+  border: 2px solid #ffa600;
+  color: #ffffff;
+  padding: 10px 16px;
+  border-radius: 4px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.7);
+  font-size: 13px;
+  animation: toastSlideIn 0.25s ease;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  pointer-events: auto;
+}
+
+@keyframes toastSlideIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}

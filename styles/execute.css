@@ -1,0 +1,662 @@
+/* ==========================================================================
+   EXECUTE COMMAND BUILDER - MINECRAFT JAVA EDITION THEME & PIPELINE
+   ========================================================================== */
+
+@font-face {
+  font-family: 'Minecraft';
+  src: url('../font/font.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+:root {
+  --mc-dark: #141414;
+  --mc-card-bg: #222222;
+  --mc-border-dark: #111111;
+  --mc-border-light: #444444;
+  --mc-panel-bg: #c6c6c6;
+  --mc-orange: #ffa600;
+  --mc-gold: #ffaa00;
+  --mc-emerald: #00aa00;
+  --mc-cyan: #00aaaa;
+  --mc-amethyst: #aa00aa;
+  --mc-red: #ff5555;
+  --mc-blue: #5555ff;
+  --mc-text-light: #f1f1f1;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  margin: 0;
+  padding-top: 56px;
+  background-color: var(--mc-dark);
+  color: var(--mc-text-light);
+  font-family: 'Minecraft', 'Segoe UI', Tahoma, monospace, sans-serif;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ================= 2-COLUMN MAIN LAYOUT ================= */
+.execute-layout {
+  display: flex;
+  width: 100vw;
+  height: calc(100vh - 56px);
+  position: relative;
+  overflow: hidden;
+}
+
+/* ================= LEFT SIDEBAR (SUBCOMMANDS LIBRARY) ================= */
+.library-sidebar {
+  width: 360px;
+  min-width: 360px;
+  height: 100%;
+  background: #1c1c1c;
+  border-right: 3px solid #333333;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 4px 0 16px rgba(0,0,0,0.5);
+  z-index: 20;
+}
+
+.library-header {
+  padding: 14px 18px;
+  background: #252525;
+  border-bottom: 2px solid #3a3a3a;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.library-header h2 {
+  font-size: 15px;
+  color: var(--mc-orange);
+  text-shadow: 1px 1px 0 #000;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.library-scroll-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.library-scroll-area::-webkit-scrollbar {
+  width: 8px;
+}
+.library-scroll-area::-webkit-scrollbar-track {
+  background: #141414;
+}
+.library-scroll-area::-webkit-scrollbar-thumb {
+  background: #444;
+  border-radius: 4px;
+}
+
+/* Accordion Category */
+.accordion-category {
+  background: #262626;
+  border: 2px solid #383838;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.accordion-header {
+  padding: 10px 12px;
+  background: #2f2f2f;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: bold;
+  user-select: none;
+  transition: background 0.15s;
+}
+
+.accordion-header:hover {
+  background: #3a3a3a;
+}
+
+.accordion-header .cat-badge {
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  text-shadow: 1px 1px 0 #000;
+}
+
+/* Category Colors */
+.cat-context .accordion-header { border-left: 4px solid var(--mc-emerald); }
+.cat-position .accordion-header { border-left: 4px solid var(--mc-cyan); }
+.cat-store .accordion-header { border-left: 4px solid var(--mc-amethyst); }
+.cat-condition .accordion-header { border-left: 4px solid var(--mc-gold); }
+.cat-execution .accordion-header { border-left: 4px solid var(--mc-orange); }
+.cat-dataget .accordion-header { border-left: 4px solid #55ffff; }
+
+.accordion-body {
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.accordion-category.collapsed .accordion-body {
+  display: none;
+}
+
+/* Subcommand Item Button */
+.subcmd-btn {
+  background: #1c1c1c;
+  border: 1px solid #444444;
+  padding: 8px 10px;
+  border-radius: 4px;
+  color: #dddddd;
+  font-family: inherit;
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  transition: all 0.15s ease;
+}
+
+.subcmd-btn:hover {
+  background: #333333;
+  border-color: var(--mc-orange);
+  color: #ffffff;
+  transform: translateX(3px);
+}
+
+.subcmd-btn code {
+  color: #55ff55;
+  font-weight: bold;
+  font-family: 'Consolas', monospace;
+  font-size: 12px;
+}
+
+.subcmd-btn span {
+  font-size: 10px;
+  color: #aaaaaa;
+}
+
+/* ================= CENTRAL AREA (ACTIVE CHAIN & OUTPUT) ================= */
+.main-pipeline-area {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #151515;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Top Command Bar Preview */
+.top-command-bar {
+  background: #1e1e1e;
+  border-bottom: 3px solid #333333;
+  padding: 16px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.6);
+  z-index: 10;
+}
+
+.command-bar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.command-bar-header h3 {
+  font-size: 14px;
+  color: var(--mc-orange);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.command-status-badge {
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: #255025;
+  color: #55ff55;
+  border: 1px solid #00aa00;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.command-preview-box {
+  background: #090909;
+  border: 2px solid var(--mc-orange);
+  border-radius: 6px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.8);
+}
+
+.command-code-text {
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 14px;
+  line-height: 1.4;
+  color: #f1f1f1;
+  word-break: break-all;
+  white-space: pre-wrap;
+  flex: 1;
+}
+
+.command-code-text .hl-kw { color: #ff55ff; font-weight: bold; }
+.command-code-text .hl-sub { color: #55ffff; font-weight: bold; }
+.command-code-text .hl-sel { color: #ffff55; }
+.command-code-text .hl-num { color: #55ff55; }
+.command-code-text .hl-str { color: #ffaa00; }
+.command-code-text .hl-cond { color: #ff5555; }
+
+.command-bar-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* ================= SUBCOMMAND PIPELINE CONTAINER ================= */
+.pipeline-scroll-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.pipeline-scroll-area::-webkit-scrollbar {
+  width: 10px;
+}
+.pipeline-scroll-area::-webkit-scrollbar-track {
+  background: #111111;
+}
+.pipeline-scroll-area::-webkit-scrollbar-thumb {
+  background: #333333;
+  border-radius: 5px;
+}
+
+/* Empty State */
+.empty-pipeline-msg {
+  text-align: center;
+  padding: 60px 20px;
+  color: #777777;
+  border: 2px dashed #333333;
+  border-radius: 8px;
+  margin: 40px auto;
+  max-width: 500px;
+}
+
+.empty-pipeline-msg h4 {
+  font-size: 16px;
+  color: #aaaaaa;
+  margin-bottom: 8px;
+}
+
+/* Subcommand Card / Block */
+.cmd-card {
+  background: #242424;
+  border: 2px solid #3d3d3d;
+  border-radius: 6px;
+  padding: 12px 16px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+  transition: transform 0.15s, border-color 0.15s;
+}
+
+.cmd-card:hover {
+  border-color: #666666;
+}
+
+.cmd-card.card-context { border-left: 6px solid var(--mc-emerald); }
+.cmd-card.card-position { border-left: 6px solid var(--mc-cyan); }
+.cmd-card.card-store { border-left: 6px solid var(--mc-amethyst); }
+.cmd-card.card-condition { border-left: 6px solid var(--mc-gold); }
+.cmd-card.card-execution { border-left: 6px solid var(--mc-orange); }
+
+.cmd-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cmd-card-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.cmd-category-tag {
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.tag-context { background: #005500; color: #55ff55; }
+.tag-position { background: #004455; color: #55ffff; }
+.tag-store { background: #440055; color: #ff55ff; }
+.tag-condition { background: #553300; color: #ffff55; }
+.tag-execution { background: #552200; color: #ffaa00; }
+
+.cmd-card-actions {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.card-icon-btn {
+  background: #333333;
+  color: #cccccc;
+  border: 1px solid #484848;
+  width: 26px;
+  height: 26px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-family: inherit;
+  transition: all 0.1s;
+}
+
+.card-icon-btn:hover {
+  background: #444444;
+  color: #ffffff;
+  border-color: var(--mc-orange);
+}
+
+.card-icon-btn.btn-del:hover {
+  background: #aa0000;
+  border-color: #ff5555;
+}
+
+/* Card Inputs Container */
+.cmd-card-body {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.input-pill-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #181818;
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid #333333;
+}
+
+.input-pill-group label {
+  font-size: 11px;
+  color: #888888;
+  white-space: nowrap;
+}
+
+.cmd-input, .cmd-select {
+  background: #0a0a0a;
+  color: #ffffff;
+  border: 1px solid #444444;
+  padding: 5px 8px;
+  font-family: 'Consolas', monospace;
+  font-size: 12px;
+  border-radius: 3px;
+  outline: none;
+}
+
+.cmd-input:focus, .cmd-select:focus {
+  border-color: var(--mc-orange);
+  box-shadow: 0 0 0 1px var(--mc-orange);
+}
+
+/* Toggle Pill Button */
+.toggle-pill {
+  background: #2e2e2e;
+  border: 1px solid #555555;
+  color: #cccccc;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: all 0.1s;
+}
+
+.toggle-pill.active-if {
+  background: #00aa00;
+  color: #ffffff;
+  border-color: #55ff55;
+}
+
+.toggle-pill.active-unless {
+  background: #aa0000;
+  color: #ffffff;
+  border-color: #ff5555;
+}
+
+/* General Minecraft Buttons */
+.mc-btn {
+  background: #c6c6c6;
+  color: #1e1e1e;
+  border: 2px solid #373737;
+  border-top-color: #ffffff;
+  border-left-color: #ffffff;
+  padding: 7px 14px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  text-shadow: 1px 1px 0 #ffffff;
+  border-radius: 3px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: filter 0.1s;
+}
+
+.mc-btn:hover {
+  background: #dbdbdb;
+}
+
+.mc-btn:active {
+  background: #9b9b9b;
+  border-top-color: #373737;
+  border-left-color: #373737;
+  border-bottom-color: #ffffff;
+  border-right-color: #ffffff;
+}
+
+.mc-btn.btn-primary {
+  background: #00aa00;
+  color: #ffffff;
+  text-shadow: 1px 1px 0 #000000;
+  border-color: #004400;
+  border-top-color: #55ff55;
+  border-left-color: #55ff55;
+}
+
+.mc-btn.btn-gold {
+  background: #ffaa00;
+  color: #1e1e1e;
+  border-color: #aa5500;
+  border-top-color: #ffff55;
+  border-left-color: #ffff55;
+}
+
+/* Presets & Reference Modal */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.75);
+  z-index: 2000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(3px);
+}
+
+.modal-backdrop.open {
+  display: flex;
+}
+
+.modal-window {
+  background: #242424;
+  border: 3px solid #555555;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+  width: 90%;
+  max-width: 800px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  border-radius: 6px;
+}
+
+.modal-header {
+  padding: 14px 18px;
+  background: #1b1b1b;
+  border-bottom: 2px solid #333333;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modal-header h3 {
+  font-size: 15px;
+  color: var(--mc-orange);
+}
+
+.modal-close-btn {
+  background: #ff5555;
+  color: #fff;
+  border: 1px solid #373737;
+  font-size: 14px;
+  font-weight: bold;
+  width: 26px;
+  height: 26px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+}
+
+.modal-body {
+  padding: 16px 20px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.modal-footer {
+  padding: 12px 18px;
+  background: #1b1b1b;
+  border-top: 2px solid #333333;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* Preset Cards */
+.preset-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.preset-card {
+  background: #181818;
+  border: 1px solid #444;
+  padding: 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.preset-card:hover {
+  background: #222;
+  border-color: var(--mc-orange);
+  transform: translateY(-2px);
+}
+
+.preset-title {
+  font-size: 13px;
+  font-weight: bold;
+  color: #55ff55;
+}
+
+.preset-desc {
+  font-size: 11px;
+  color: #aaaaaa;
+}
+
+.preset-code {
+  font-family: monospace;
+  font-size: 11px;
+  color: var(--mc-orange);
+  background: #0d0d0d;
+  padding: 4px 6px;
+  border-radius: 3px;
+}
+
+/* Toast Notifications */
+.toast-container {
+  position: fixed;
+  top: 70px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.mc-toast {
+  background: #1e1e1e;
+  border: 2px solid var(--mc-orange);
+  color: #ffffff;
+  padding: 10px 16px;
+  border-radius: 4px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.7);
+  font-size: 13px;
+  animation: toastSlideIn 0.25s ease;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  pointer-events: auto;
+}
+
+@keyframes toastSlideIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}

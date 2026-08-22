@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Advancement Tree Generator - Minecraft Java Edition</title>
+  <link rel="stylesheet" href="../styles/home.css">
+  <link rel="stylesheet" href="../styles/advancement.css">
+</head>
+<body>
+  <!-- Global Navbar -->
+  <div id="navbar-container"></div>
+  <script>
+    fetch('../navbar.html')
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById('navbar-container').innerHTML = data;
+      })
+      .catch(error => console.error('Navbar load error:', error));
+  </script>
+
+  <!-- Application Main Container -->
+  <div class="app-container">
+
+    <!-- CANVAS VIEWPORT (Interactive Pan & Zoom) -->
+    <div class="canvas-viewport" id="canvasViewport">
+      <!-- Background Tile Layer -->
+      <div class="canvas-bg-layer" id="canvasBgLayer"></div>
+
+      <!-- Top Hint Bar -->
+      <div class="canvas-hint-bar">
+        <span>🖱️ <kbd>Drag</kbd> Pan Canvas</span>
+        <span>🔍 <kbd>Scroll</kbd> Zoom</span>
+        <span>✨ <kbd>Double Click</kbd> New Node</span>
+        <span>✋ <kbd>Drag Node</kbd> Reposition</span>
+      </div>
+
+      <!-- Transformable Canvas Content -->
+      <div class="canvas-content" id="canvasContent">
+        <!-- SVG Connections Layer -->
+        <svg class="connections-svg" id="connectionsSvg"></svg>
+
+        <!-- Dynamic Nodes Layer -->
+        <div class="nodes-layer" id="nodesLayer"></div>
+      </div>
+
+      <!-- Canvas HUD Controls -->
+      <div class="canvas-hud">
+        <button class="hud-btn" onclick="zoomIn()" title="Zoom In">➕ Zoom In</button>
+        <button class="hud-btn" onclick="zoomOut()" title="Zoom Out">➖ Zoom Out</button>
+        <span class="hud-zoom-text" id="hudZoomText">100%</span>
+        <button class="hud-btn" onclick="resetView()" title="Reset View">🎯 Reset</button>
+        <button class="hud-btn" onclick="autoLayoutTree()" title="Auto-Layout Tree">🌳 Auto-Layout</button>
+        <button class="hud-btn" onclick="addRootAdvancement()" title="Add Root Questline">🌟 + New Root</button>
+      </div>
+    </div>
+
+    <!-- RIGHT SIDEBAR EDITOR (420px Fixed) -->
+    <div class="sidebar-editor">
+      <div class="sidebar-header">
+        <h2>🛠️ Advancement Editor</h2>
+        <div style="display: flex; gap: 6px;">
+          <button class="mc-btn btn-gold" onclick="openJsonModal()" title="View JSON code">📜 JSON</button>
+        </div>
+      </div>
+
+      <!-- Scrollable Form Content -->
+      <div class="sidebar-scroll-area" id="sidebarContent">
+        <!-- Injected dynamically by JavaScript -->
+      </div>
+
+      <!-- Bottom Action Bar -->
+      <div class="sidebar-footer">
+        <div class="footer-btn-grid">
+          <button class="mc-btn btn-primary" onclick="downloadDataPackZip()" title="Download full Data Pack with pack.mcmeta and advancement files">
+            📦 Export Data Pack (.ZIP)
+          </button>
+          <button class="mc-btn" onclick="saveProjectFile()" title="Save whole tree project state to .json">
+            💾 Save Project
+          </button>
+        </div>
+        <div class="footer-btn-grid">
+          <label class="mc-btn" style="text-align: center; cursor: pointer;">
+            📂 Load / Import JSON
+            <input type="file" accept=".json" style="display: none;" onchange="loadProjectFile(event)">
+          </label>
+          <button class="mc-btn btn-gold" onclick="openJsonModal()">
+            👁️ Live Inspector
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ITEM PICKER MODAL -->
+  <div class="modal-backdrop" id="itemPickerModal">
+    <div class="modal-window">
+      <div class="modal-header">
+        <h3>⛏️ Select Minecraft Item Icon</h3>
+        <button class="modal-close-btn" onclick="closeItemPickerModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="item-search-bar">
+          <input type="text" id="itemSearchInput" class="gui-input" placeholder="🔍 Search item (e.g. diamond, sword, apple, elytra)...">
+        </div>
+        <div class="item-grid" id="itemGrid">
+          <!-- Item slots generated dynamically -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="mc-btn" onclick="closeItemPickerModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JSON PREVIEW MODAL -->
+  <div class="modal-backdrop" id="jsonPreviewModal">
+    <div class="modal-window" style="max-width: 760px;">
+      <div class="modal-header">
+        <h3>📜 Advancement JSON Inspector</h3>
+        <button class="modal-close-btn" onclick="closeJsonModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="code-viewer" id="jsonCodeViewer"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="mc-btn btn-primary" onclick="copyJsonToClipboard()">📋 Copy JSON</button>
+        <button class="mc-btn" onclick="closeJsonModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Scripts -->
+  <script src="../script/advancement.js"></script>
+</body>
+</html>
